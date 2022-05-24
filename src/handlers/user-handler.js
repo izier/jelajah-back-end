@@ -5,7 +5,7 @@ const addUserHandler = (request, h) => {
   const {fullname, username, password} = request.payload;
   const createdAt = new Date().toISOString();
   const updatedAt = createdAt;
-  const missions = [];
+  const plans = [];
   const exp = 0;
   const level = 0;
 
@@ -13,7 +13,7 @@ const addUserHandler = (request, h) => {
     const salt = bcrypt.genSalt(10);
     password = bcrypt.hash(password, salt);
     const newUser = {
-      fullname, username, password, createdAt, updatedAt, missions, exp, level,
+      fullname, username, password, createdAt, updatedAt, plans, exp, level,
     };
     users.push(newUser);
   }
