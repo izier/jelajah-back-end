@@ -4,6 +4,7 @@ import { Database } from "./db.mjs"
 import { authRouter } from "./auth/router.mjs"
 import { validate } from './auth/service.mjs'
 import { userRouter } from "./users/router.mjs"
+import { placeRouter } from "./places/router.mjs"
 
 (async () => {
   const server = Hapi.server({
@@ -29,7 +30,7 @@ import { userRouter } from "./users/router.mjs"
       path: '/',
       handler: async () => ({ message: 'Server sedang berjalan' })
     }
-  ].concat(authRouter, userRouter))
+  ].concat(authRouter, userRouter, placeRouter))
 
   await server.start()
   console.log('Server running on %s', server.info.uri)

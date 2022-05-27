@@ -16,6 +16,10 @@ export const PlaceModel = Database.define('place', {
     unique: true,
     allowNull: false
   },
+  rating: {
+    type: DataTypes.FLOAT,
+    allowNull: false
+  },
   city: {
     type: DataTypes.STRING,
     allowNull: false
@@ -23,9 +27,5 @@ export const PlaceModel = Database.define('place', {
   address: {
     type: DataTypes.STRING,
     allowNull: false
-  },
-  missions: {
-    type: DataTypes.INTEGER,
-    defaultValue: 0
-  },
+  }
 })

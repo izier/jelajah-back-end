@@ -1,6 +1,6 @@
 import {
-  findAllUserController,
-  findByUsernameController,
+  getAllUserController,
+  getUserByUsernameController,
   updateExpUserController
 } from "./controller.mjs";
 
@@ -8,12 +8,12 @@ export const userRouter = [
   {
     method: 'GET',
     path: '/users',
-    handler: findAllUserController
+    handler: getAllUserController
   },
   {
     method: 'GET',
     path: '/users/{username}',
-    handler: findByUsernameController
+    handler: getUserByUsernameController
   },
   {
     method: 'POST',

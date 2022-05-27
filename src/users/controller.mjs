@@ -1,6 +1,6 @@
 import { findAllUser, findByUsername, updateExpUser } from "./service.mjs"
 
-export const findAllUserController = async (req, res) => {
+export const getAllUserController = async (req, res) => {
   try {
     const allUser = await findAllUser()
     return res.response({
@@ -15,7 +15,7 @@ export const findAllUserController = async (req, res) => {
   }
 }
 
-export const findByUsernameController = async (req, res) => {
+export const getUserByUsernameController = async (req, res) => {
   try {
     const { username } = req.params
     const user = await findByUsername(username)
