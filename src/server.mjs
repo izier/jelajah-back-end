@@ -5,11 +5,12 @@ import { authRouter } from "./auth/router.mjs"
 import { validate } from './auth/service.mjs'
 import { userRouter } from "./users/router.mjs"
 import { placeRouter } from "./places/router.mjs"
+import { HOSTNAME, PORT } from "../config.mjs"
 
 (async () => {
   const server = Hapi.server({
-    port: 3000,
-    host: 'localhost'
+    port: PORT,
+    host: HOSTNAME
   })
 
   try {

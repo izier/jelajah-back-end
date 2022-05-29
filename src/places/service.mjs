@@ -1,4 +1,4 @@
-import { PlaceModel } from "./models.mjs"
+import { PlaceModel } from "./model.mjs"
 
 export const createPlace = async (name, description, rating, city, address) => {
   return await PlaceModel.create({
@@ -9,10 +9,12 @@ export const findAllPlace = async () => { return await PlaceModel.findAll() }
 export const findPlaceById = async (id) => { return await PlaceModel.findByPk(id) }
 export const updatePlace = async (id, name, description, rating, city, address) => {
   try {
-    const place = await PlaceModel.update({
-      name: name, description: description, rating: rating, city: city, address: address,
-    }, { where: { id: id } })
-    await place.save()
+    return await PlaceModel.update(
+      {
+        name: name, description: description, rating: rating, city: city, address: address,
+      },
+      { where: { id: id } }
+    )
   } catch (error) {
     return error
   }

@@ -1,5 +1,5 @@
 import bcrypt from 'bcrypt'
-import { UserModel } from "../users/models.mjs"
+import { UserModel } from "./model.mjs"
 
 export const createUser = async (name, username, password) => await UserModel.create({
   name: name,
