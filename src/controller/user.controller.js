@@ -8,7 +8,7 @@ module.exports = [
     handler: async (req, res) => {
       const { name, username, password } = req.payload;
       try {
-        User.create({
+        await User.create({
           name: name,
           username: username,
           password: await Bcrypt.hash(password, 10),
@@ -20,7 +20,7 @@ module.exports = [
       } catch (error) {
         return res.response({
           status: "error",
-          messsage: error,
+          messsage: "username telah digunakan",
         });
       }
     },

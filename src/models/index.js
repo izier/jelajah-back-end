@@ -47,6 +47,10 @@ const Place = database.define("place", {
     type: Sequelize.STRING,
     allowNull: false,
   },
+  rating: {
+    type: Sequelize.FLOAT,
+    allowNull: false,
+  },
 });
 
 const Plan = database.define("plan", {
