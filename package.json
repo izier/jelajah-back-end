@@ -3,11 +3,10 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
-  "type": "module",
+  "type": "commonjs",
   "scripts": {
-    "start:dev": "nodemon ./src/server.mjs",
-    "start": "node ./src/server.mjs",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start:dev": "nodemon ./src/server.js",
+    "start": "node ./src/server.js"
   },
   "keywords": [],
   "author": "",
@@ -18,7 +17,7 @@
     "@hapi/inert": "^6.0.5",
     "bcrypt": "^5.0.1",
     "nanoid": "^3.3.4",
-    "sequelize": "^6.20.0",
+    "sequelize": "^6.20.1",
     "sqlite3": "^5.0.8"
   },
   "devDependencies": {
