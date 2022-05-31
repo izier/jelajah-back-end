@@ -1,0 +1,56 @@
+###
+# User Register
+
+POST http://localhost:3000/register
+Content-Type: application/json
+Accept: application/json
+
+{
+  "name": "nama lengkap",
+  "username": "username2",
+  "password": "password123"
+}
+###
+# User Login
+
+POST http://localhost:3000/login
+Content-Type: application/json
+Accept: application/json
+
+{
+  "username": "username2",
+  "password": "password123"
+}
+
+###
+# Get All User
+GET http://localhost:3000/users
+Content-Type: application/json
+Accept: application/json
+
+###
+# Find User by Username
+
+GET http://localhost:3000/users/username2
+Content-Type: application/json
+Accept: application/json
+
+###
+# Update User Exp
+
+POST  http://localhost:3000/users/1/level
+Content-Type: application/json
+Accept: application/json
+Authorization: Basic username2:password123
+
+{
+  "exp": 1000
+}
+
+###
+# Test
+
+GET http://localhost:3000/test
+Content-Type: application/json
+Accept: application/json
+Authorization: Basic username2:password123
