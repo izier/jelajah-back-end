@@ -5,7 +5,7 @@ const database = new Sequelize({
   storage: "database.db",
 });
 
-const Image = database.define("image", {
+const ImageModel = database.define("image", {
   id: {
     type: Sequelize.INTEGER,
     autoIncrement: true,
@@ -30,6 +30,9 @@ const City = database.define("city", {
   description: {
     type: Sequelize.STRING,
     allowNull: false,
+  },
+  imageUrl: {
+    type: Sequelize.STRING,
   },
 });
 
@@ -117,11 +120,12 @@ const UserPlan = database.define("user_plan", {
 City.hasMany(Place);
 Place.belongsTo(City);
 
+
 Place.hasMany(Plan);
 Plan.belongsTo(Place);
 
-Place.hasMany(Image);
-Image.belongsTo(Place);
+Place.hasMany(ImageModel);
+ImageModel.belongsTo(Place);
 
 Plan.hasMany(Mission);
 Mission.belongsTo(Plan);
@@ -131,7 +135,7 @@ UserPlan.belongsTo(User);
 
 module.exports = {
   database,
-  Image,
+  ImageModel,
   City,
   Place,
   Plan,

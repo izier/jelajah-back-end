@@ -1,12 +1,13 @@
 const fs = require("fs");
 
 const handleImageUpload = (file, filename) => {
+  const pathname ="./public/" + filename + ".png" 
   return new Promise((resolve, reject) => {
-    fs.writeFile("/images/" + filename + ".png", file, (err) => {
+    fs.writeFile(pathname, file, (err) => {
       if (err) {
         reject(err);
       }
-      resolve({ message: "Upload successfully!" });
+      resolve("/public/" + filename + ".png");
     });
   });
 };
