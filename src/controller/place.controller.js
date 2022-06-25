@@ -1,18 +1,17 @@
-const { nanoid } = require("nanoid");
 const { Place, Plan, City, ImageModel } = require("../models");
-const handleImageUpload = require("../utils/upload");
 
 module.exports = [
   {
     method: "POST",
     path: "/places",
     handler: async (req, res) => {
-      const { name, description, rating, cityId } = req.payload;
+      const { name, description, coverImage, rating, cityId } = req.payload;
       try {
         return await Place.create(
           {
             name: name,
             description: description,
+            coverImage: coverImage,
             rating: rating,
             cityId: cityId,
           },
@@ -55,33 +54,5 @@ module.exports = [
       }
     },
   },
-  {
-    method: "POST",
-    path: "/places/{id}",
-    options: {
-      payload: {
-        multipart: true ,
-      }
-    },
-    handler: async (req, res) => {
-      try {   
-        const { image } = req.payload
-        const { id } = req.params;
-        const response = await handleImageUpload(image, "places_" +nanoid())
-        await ImageModel.create({ url: response, placeId: id }, 
-          { include: Place }
-        )
-        return {
-          status: "success",
-          messsage: "upload foto berhasil",
-        }
-      } catch (error) {
-        console.log(error)
-        return res.response({
-          status: "error",
-          messsage: error,
-        });
-      }
-    },
-  },
+
 ];

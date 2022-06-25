@@ -6,11 +6,12 @@ module.exports = [
     method: "POST",
     path: "/cities",
     handler: async (req, res) => {
-      const { name, description } = req.payload;
+      const { name, description, icon } = req.payload;
       try {
         return await City.create({
           name: name,
-          description: description
+          description: description,
+          icon: icon,
         });
       } catch (error) {
         return res.response({

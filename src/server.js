@@ -10,7 +10,7 @@ const { database } = require('./models');
   const server = new Hapi.Server({
     host: 'localhost',
     port: 3000,
-});
+  });
 
   try {
     await database.sync({ force: true });

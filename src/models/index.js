@@ -23,6 +23,9 @@ const City = database.define("city", {
     autoIncrement: true,
     primaryKey: true,
   },
+  icon: {
+    type: Sequelize.STRING,
+  },
   name: {
     type: Sequelize.STRING,
     allowNull: false,
@@ -30,9 +33,6 @@ const City = database.define("city", {
   description: {
     type: Sequelize.STRING,
     allowNull: false,
-  },
-  imageUrl: {
-    type: Sequelize.STRING,
   },
 });
 
@@ -43,6 +43,10 @@ const Place = database.define("place", {
     primaryKey: true,
   },
   name: {
+    type: Sequelize.STRING,
+    allowNull: false,
+  },
+  coverImage: {
     type: Sequelize.STRING,
     allowNull: false,
   },
@@ -134,11 +138,13 @@ const UserMission = database.define("user_mission", {
   imageUrl: {
     type: Sequelize.STRING,
   },
+  status: {
+    type: Sequelize.STRING,
+  },
 });
 
 City.hasMany(Place);
 Place.belongsTo(City);
-
 
 Place.hasMany(Plan);
 Plan.belongsTo(Place);
