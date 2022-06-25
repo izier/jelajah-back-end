@@ -1,5 +1,6 @@
-const { User } = require("../models");
+const { User, UserMission, Mission } = require("../models");
 const Bcrypt = require("bcrypt");
+const handleImageUpload = require("../utils/upload");
 
 module.exports = [
   {
@@ -35,14 +36,14 @@ module.exports = [
         const isValid = await Bcrypt.compare(password, user.password);
         return isValid
           ? res.response({
-              status: "success",
-              messsage: "Anda berhasil login",
-              user,
-            })
+            status: "success",
+            messsage: "Anda berhasil login",
+            user,
+          })
           : res.response({
-              status: "fail",
-              messsage: "Kombinasi Username atau Password salah",
-            });
+            status: "fail",
+            messsage: "Kombinasi Username atau Password salah",
+          });
       } catch (error) {
         return res.response({
           status: "error",
@@ -56,7 +57,15 @@ module.exports = [
     path: "/users",
     handler: async (req, res) => {
       try {
-        return await User.findAll();
+        return await User.findAll({
+          attributes: [
+            "id",
+            "name",
+            "username",
+            "password",
+            "points"
+          ]
+        })
       } catch (error) {
         return res.response({
           status: "error",
@@ -67,12 +76,93 @@ module.exports = [
   },
   {
     method: "GET",
-    path: "/users/{username}",
+    path: "/users/{id}",
     handler: async (req, res) => {
-      const { username } = req.params;
+      const { id } = req.params;
       try {
-        return await User.findOne({ where: { username: username } });
+        return await User.findByPk(
+          id, {
+          attributes: [
+            "id",
+            "name",
+            "username",
+            "password",
+            "points",
+          ],
+        });
       } catch (error) {
+        return res.response({
+          status: "error",
+          messsage: error,
+        });
+      }
+    },
+  },
+  {
+    method: "GET",
+    path: "/users/{id}/missions",
+    handler: async (req, res) => {
+      const { id } = req.params;
+      try {
+        return await UserMission.findAll({
+          where: { userId: id },
+          include: [User, Mission],
+        });
+      } catch (error) {
+        return res.response({
+          status: "error",
+          messsage: error,
+        });
+      }
+    },
+  },
+  {
+    method: "POST",
+    path: "/users/{user_id}/missions/{mission_id}",
+    handler: async (req, res) => {
+      const { user_id, mission_id } = req.params;
+      const { long, lat } = req.payload;
+
+      try {
+        return await UserMission.create({
+          userId: user_id,
+          missionId: mission_id,
+          long: long,
+          lat: lat,
+          include: [User, Mission],
+        });
+      } catch (error) {
+        return res.response({
+          status: "error",
+          messsage: error,
+        });
+      }
+    },
+  },
+  {
+    method: "POST",
+    path: "/users/{user_id}/missions/{mission_id}/image",
+    options: {
+      payload: {
+        multipart: true,
+      }
+    },
+    handler: async (req, res) => {
+      try {
+        const { image } = req.payload
+        const { id } = req.params;
+        const response = await handleImageUpload(image, "cities_" + id)
+        await UserMission.update({ imageUrl: response }, {
+          where: {
+            id: id
+          }
+        })
+        return {
+          status: "success",
+          messsage: "upload image berhasil",
+        }
+      } catch (error) {
+        console.log(error)
         return res.response({
           status: "error",
           messsage: error,

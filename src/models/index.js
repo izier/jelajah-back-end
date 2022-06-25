@@ -23,6 +23,9 @@ const City = database.define("city", {
     autoIncrement: true,
     primaryKey: true,
   },
+  icon: {
+    type: Sequelize.STRING,
+  },
   name: {
     type: Sequelize.STRING,
     allowNull: false,
@@ -30,9 +33,6 @@ const City = database.define("city", {
   description: {
     type: Sequelize.STRING,
     allowNull: false,
-  },
-  imageUrl: {
-    type: Sequelize.STRING,
   },
 });
 
@@ -43,6 +43,10 @@ const Place = database.define("place", {
     primaryKey: true,
   },
   name: {
+    type: Sequelize.STRING,
+    allowNull: false,
+  },
+  coverImage: {
     type: Sequelize.STRING,
     allowNull: false,
   },
@@ -82,6 +86,14 @@ const Mission = database.define("mission", {
     type: Sequelize.STRING,
     allowNull: false,
   },
+  long: {
+    type: Sequelize.FLOAT,
+    allowNull: false,
+  },
+  lat: {
+    type: Sequelize.FLOAT,
+    allowNull: false,
+  },
 });
 
 const User = database.define("user", {
@@ -109,17 +121,30 @@ const User = database.define("user", {
   },
 });
 
-const UserPlan = database.define("user_plan", {
+const UserMission = database.define("user_mission", {
   id: {
     type: Sequelize.INTEGER,
     autoIncrement: true,
     primaryKey: true,
   },
+  long: {
+    type: Sequelize.FLOAT,
+    allowNull: false,
+  },
+  lat: {
+    type: Sequelize.FLOAT,
+    allowNull: false,
+  },
+  imageUrl: {
+    type: Sequelize.STRING,
+  },
+  status: {
+    type: Sequelize.STRING,
+  },
 });
 
 City.hasMany(Place);
 Place.belongsTo(City);
-
 
 Place.hasMany(Plan);
 Plan.belongsTo(Place);
@@ -130,8 +155,9 @@ ImageModel.belongsTo(Place);
 Plan.hasMany(Mission);
 Mission.belongsTo(Plan);
 
-User.hasMany(UserPlan);
-UserPlan.belongsTo(User);
+UserMission.belongsTo(Mission)
+UserMission.belongsTo(User)
+
 
 module.exports = {
   database,
@@ -141,5 +167,5 @@ module.exports = {
   Plan,
   Mission,
   User,
-  UserPlan,
+  UserMission,
 };
