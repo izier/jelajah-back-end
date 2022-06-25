@@ -35,14 +35,14 @@ module.exports = [
         const isValid = await Bcrypt.compare(password, user.password);
         return isValid
           ? res.response({
-              status: "success",
-              messsage: "Anda berhasil login",
-              user,
-            })
+            status: "success",
+            messsage: "Anda berhasil login",
+            user,
+          })
           : res.response({
-              status: "fail",
-              messsage: "Kombinasi Username atau Password salah",
-            });
+            status: "fail",
+            messsage: "Kombinasi Username atau Password salah",
+          });
       } catch (error) {
         return res.response({
           status: "error",
@@ -56,7 +56,15 @@ module.exports = [
     path: "/users",
     handler: async (req, res) => {
       try {
-        return await User.findAll();
+        return await User.findAll({
+          attributes: [
+            "id",
+            "name",
+            "username",
+            "password",
+            "points"
+          ]
+        })
       } catch (error) {
         return res.response({
           status: "error",
@@ -71,7 +79,15 @@ module.exports = [
     handler: async (req, res) => {
       const { username } = req.params;
       try {
-        return await User.findOne({ where: { username: username } });
+        return await User.findOne({
+          attributes: [
+            "id",
+            "name",
+            "username",
+            "password",
+            "points",
+          ], where: { username: username }
+        });
       } catch (error) {
         return res.response({
           status: "error",

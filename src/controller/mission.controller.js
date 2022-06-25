@@ -5,10 +5,15 @@ module.exports = [
     method: "POST",
     path: "/missions",
     handler: async (req, res) => {
-      const { name, planId } = req.payload;
+      const { name, planId, long, lat } = req.payload;
       try {
         return await Mission.create(
-          { name: name, planId: planId },
+          {
+            name: name,
+            planId: planId,
+            long: long,
+            lat: lat,
+          },
           { include: Plan }
         );
       } catch (error) {

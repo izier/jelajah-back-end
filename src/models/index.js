@@ -82,6 +82,14 @@ const Mission = database.define("mission", {
     type: Sequelize.STRING,
     allowNull: false,
   },
+  long: {
+    type: Sequelize.FLOAT,
+    allowNull: false,
+  },
+  lat: {
+    type: Sequelize.FLOAT,
+    allowNull: false,
+  },
 });
 
 const User = database.define("user", {

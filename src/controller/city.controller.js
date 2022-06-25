@@ -1,4 +1,3 @@
-const { nanoid } = require("nanoid");
 const { City, Place } = require("../models");
 const handleImageUpload = require("../utils/upload");
 
@@ -26,7 +25,12 @@ module.exports = [
     path: "/cities",
     handler: async (req, res) => {
       try {
-        return await City.findAll({ include: Place });
+        return await City.findAll({
+          attributes: [
+            "name",
+            "description",
+          ], include: Place
+        });
       } catch (error) {
         return res.response({
           status: "error",
@@ -41,7 +45,13 @@ module.exports = [
     handler: async (req, res) => {
       try {
         const { id } = req.params;
-        return await City.findByPk(id, { include: Place });
+        return await City.findByPk(id, {
+          attributes: [
+            "name",
+            "description",
+
+          ], include: Place
+        });
       } catch (error) {
         return res.response({
           status: "error",
@@ -55,11 +65,11 @@ module.exports = [
     path: "/cities/{id}",
     options: {
       payload: {
-        multipart: true ,
+        multipart: true,
       }
     },
     handler: async (req, res) => {
-      try {   
+      try {
         const { image } = req.payload
         const { id } = req.params;
         const response = await handleImageUpload(image, "cities_" + id)
