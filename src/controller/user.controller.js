@@ -1,5 +1,6 @@
 const { User, UserMission, Mission } = require("../models");
 const Bcrypt = require("bcrypt");
+const handleImageUpload = require("../utils/upload");
 
 module.exports = [
   {
@@ -138,5 +139,35 @@ module.exports = [
       }
     },
   },
-
+  {
+    method: "POST",
+    path: "/users/{user_id}/missions/{mission_id}/image",
+    options: {
+      payload: {
+        multipart: true,
+      }
+    },
+    handler: async (req, res) => {
+      try {
+        const { image } = req.payload
+        const { id } = req.params;
+        const response = await handleImageUpload(image, "cities_" + id)
+        await UserMission.update({ imageUrl: response }, {
+          where: {
+            id: id
+          }
+        })
+        return {
+          status: "success",
+          messsage: "upload image berhasil",
+        }
+      } catch (error) {
+        console.log(error)
+        return res.response({
+          status: "error",
+          messsage: error,
+        });
+      }
+    },
+  },
 ];

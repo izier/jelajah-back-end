@@ -131,7 +131,7 @@ const UserMission = database.define("user_mission", {
     type: Sequelize.FLOAT,
     allowNull: false,
   },
-  image: {
+  imageUrl: {
     type: Sequelize.STRING,
   },
 });
