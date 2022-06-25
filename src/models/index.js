@@ -123,6 +123,30 @@ const UserPlan = database.define("user_plan", {
     autoIncrement: true,
     primaryKey: true,
   },
+  planId: {
+    type: Sequelize.INTEGER,
+    allowNull: false,
+  }
+});
+
+
+const UserMission = database.define("user_mission", {
+  id: {
+    type: Sequelize.INTEGER,
+    autoIncrement: true,
+    primaryKey: true,
+  },
+  long: {
+    type: Sequelize.FLOAT,
+    allowNull: false,
+  },
+  lat: {
+    type: Sequelize.FLOAT,
+    allowNull: false,
+  },
+  image: {
+    type: Sequelize.STRING,
+  },
 });
 
 City.hasMany(Place);
@@ -141,6 +165,9 @@ Mission.belongsTo(Plan);
 User.hasMany(UserPlan);
 UserPlan.belongsTo(User);
 
+UserPlan.hasMany(Mission);
+UserMission.belongsTo(UserPlan);
+
 module.exports = {
   database,
   ImageModel,
@@ -150,4 +177,5 @@ module.exports = {
   Mission,
   User,
   UserPlan,
+  UserMission,
 };

@@ -1,4 +1,4 @@
-const { User } = require("../models");
+const { User, UserPlan, UserMission } = require("../models");
 const Bcrypt = require("bcrypt");
 
 module.exports = [
@@ -75,18 +75,37 @@ module.exports = [
   },
   {
     method: "GET",
-    path: "/users/{username}",
+    path: "/users/{id}",
     handler: async (req, res) => {
-      const { username } = req.params;
+      const { id } = req.params;
       try {
-        return await User.findOne({
+        return await User.findByPk(
+          id, {
           attributes: [
             "id",
             "name",
             "username",
             "password",
             "points",
-          ], where: { username: username }
+          ],
+        });
+      } catch (error) {
+        return res.response({
+          status: "error",
+          messsage: error,
+        });
+      }
+    },
+  },
+  {
+    method: "GET",
+    path: "/users/{id}/plans",
+    handler: async (req, res) => {
+      const { id } = req.params;
+      try {
+        return await UserPlan.findOne({
+          where: { userId: id },
+          include: UserMission,
         });
       } catch (error) {
         return res.response({
