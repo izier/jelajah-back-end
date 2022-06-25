@@ -10,9 +10,10 @@ module.exports = [
         return await Mission.create(
           {
             name: name,
-            planId: planId,
             long: long,
             lat: lat,
+            planId: planId,
+
           },
           { include: Plan }
         );

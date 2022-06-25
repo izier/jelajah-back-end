@@ -117,19 +117,6 @@ const User = database.define("user", {
   },
 });
 
-const UserPlan = database.define("user_plan", {
-  id: {
-    type: Sequelize.INTEGER,
-    autoIncrement: true,
-    primaryKey: true,
-  },
-  planId: {
-    type: Sequelize.INTEGER,
-    allowNull: false,
-  }
-});
-
-
 const UserMission = database.define("user_mission", {
   id: {
     type: Sequelize.INTEGER,
@@ -162,11 +149,9 @@ ImageModel.belongsTo(Place);
 Plan.hasMany(Mission);
 Mission.belongsTo(Plan);
 
-User.hasMany(UserPlan);
-UserPlan.belongsTo(User);
+UserMission.belongsTo(Mission)
+UserMission.belongsTo(User)
 
-UserPlan.hasMany(Mission);
-UserMission.belongsTo(UserPlan);
 
 module.exports = {
   database,
@@ -176,6 +161,5 @@ module.exports = {
   Plan,
   Mission,
   User,
-  UserPlan,
   UserMission,
 };

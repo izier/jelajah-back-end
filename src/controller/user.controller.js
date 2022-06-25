@@ -1,4 +1,4 @@
-const { User, UserPlan, UserMission } = require("../models");
+const { User, UserMission, Mission } = require("../models");
 const Bcrypt = require("bcrypt");
 
 module.exports = [
@@ -99,13 +99,13 @@ module.exports = [
   },
   {
     method: "GET",
-    path: "/users/{id}/plans",
+    path: "/users/{id}/missions",
     handler: async (req, res) => {
       const { id } = req.params;
       try {
-        return await UserPlan.findOne({
+        return await UserMission.findAll({
           where: { userId: id },
-          include: UserMission,
+          include: [User, Mission],
         });
       } catch (error) {
         return res.response({
@@ -115,4 +115,28 @@ module.exports = [
       }
     },
   },
+  {
+    method: "POST",
+    path: "/users/{user_id}/missions/{mission_id}",
+    handler: async (req, res) => {
+      const { user_id, mission_id } = req.params;
+      const { long, lat } = req.payload;
+
+      try {
+        return await UserMission.create({
+          userId: user_id,
+          missionId: mission_id,
+          long: long,
+          lat: lat,
+          include: [User, Mission],
+        });
+      } catch (error) {
+        return res.response({
+          status: "error",
+          messsage: error,
+        });
+      }
+    },
+  },
+
 ];
