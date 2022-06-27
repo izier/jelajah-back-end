@@ -32,7 +32,13 @@ module.exports = [
     handler: async (req, res) => {
       const { username, password } = req.payload;
       try {
-        const user = await User.findOne({ where: { username: username } });
+        const user = await User.findOne({attributes: [
+                    "id",
+                    "name",
+                    "username",
+                    "password",
+                    "points",
+          ]},{ where: { username: username } });
         const isValid = await Bcrypt.compare(password, user.password);
         return isValid
           ? res.response({

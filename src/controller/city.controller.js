@@ -30,6 +30,7 @@ module.exports = [
           attributes: [
             "name",
             "description",
+            "icon",
           ], include: Place
         });
       } catch (error) {
