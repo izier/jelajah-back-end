@@ -30,6 +30,7 @@ module.exports = [
           attributes: [
             "name",
             "description",
+            "icon",
           ], include: Place
         });
       } catch (error) {
@@ -47,11 +48,8 @@ module.exports = [
       try {
         const { id } = req.params;
         return await City.findByPk(id, {
-          attributes: [
-            "name",
-            "description",
-
-          ], include: Place
+          attributes: ["name", "description", "icon"],
+          include: Place,
         });
       } catch (error) {
         return res.response({
