@@ -9,15 +9,11 @@ const { database } = require('./models');
 (async () => {
   const server = new Hapi.Server({
     host: '0.0.0.0',
-    port: 5000,
+    port: 3000,
   });
 
   try {
-    // always buld new database, for developments
-    await database.sync({ force: true });
-    
-    // fix database 
-    // await database.sync();
+    await database.sync({force: true});
     console.log('Database Initialized');
   } catch (error) {
     console.log(error);
