@@ -19,7 +19,7 @@ module.exports = [
         return res.response({
           status: "error",
           messsage: error,
-        });
+        }).code(202);
       }
     },
   },
@@ -33,7 +33,7 @@ module.exports = [
         return res.response({
           status: "error",
           messsage: error,
-        });
+        }).code(202);
       }
     },
   },
@@ -48,7 +48,7 @@ module.exports = [
         return res.response({
           status: "error",
           messsage: error,
-        });
+        }).code(202);
       }
     },
   },

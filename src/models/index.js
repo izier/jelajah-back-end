@@ -102,7 +102,7 @@ const User = database.define("user", {
     autoIncrement: true,
     primaryKey: true,
   },
-  name: {
+  fullname: {
     type: Sequelize.STRING,
     allowNull: false,
   },

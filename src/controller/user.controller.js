@@ -7,10 +7,10 @@ module.exports = [
     method: "POST",
     path: "/register",
     handler: async (req, res) => {
-      const { name, username, password } = req.payload;
+      const { fullname, username, password } = req.payload;
       try {
         await User.create({
-          name: name,
+          fullname: fullname,
           username: username,
           password: await Bcrypt.hash(password, 10),
         });
@@ -22,7 +22,7 @@ module.exports = [
         return res.response({
           status: "error",
           messsage: "username telah digunakan",
-        });
+        }).code(202);
       }
     },
   },
@@ -32,13 +32,15 @@ module.exports = [
     handler: async (req, res) => {
       const { username, password } = req.payload;
       try {
-        const user = await User.findOne({attributes: [
-                    "id",
-                    "name",
-                    "username",
-                    "password",
-                    "points",
-          ]},{ where: { username: username } });
+        const user = await User.findOne({
+          attributes: [
+            "id",
+            "fullname",
+            "username",
+            "password",
+            "points",
+          ]
+        }, { where: { username: username } });
         const isValid = await Bcrypt.compare(password, user.password);
         return isValid
           ? res.response({
@@ -54,7 +56,7 @@ module.exports = [
         return res.response({
           status: "error",
           messsage: error,
-        });
+        }).code(202);
       }
     },
   },
@@ -66,7 +68,7 @@ module.exports = [
         return await User.findAll({
           attributes: [
             "id",
-            "name",
+            "fullname",
             "username",
             "password",
             "points"
@@ -76,7 +78,7 @@ module.exports = [
         return res.response({
           status: "error",
           messsage: error,
-        });
+        }).code(202);
       }
     },
   },
@@ -90,17 +92,17 @@ module.exports = [
           id, {
           attributes: [
             "id",
-            "name",
+            "fullname",
             "username",
             "password",
             "points",
           ],
-        });
+        }).code(202);
       } catch (error) {
         return res.response({
           status: "error",
           messsage: error,
-        });
+        }).code(202);
       }
     },
   },
@@ -118,7 +120,7 @@ module.exports = [
         return res.response({
           status: "error",
           messsage: error,
-        });
+        }).code(202);
       }
     },
   },
@@ -141,7 +143,7 @@ module.exports = [
         return res.response({
           status: "error",
           messsage: error,
-        });
+        }).code(202);
       }
     },
   },
@@ -172,7 +174,7 @@ module.exports = [
         return res.response({
           status: "error",
           messsage: error,
-        });
+        }).code(202);
       }
     },
   },
