@@ -47,11 +47,11 @@ module.exports = [
             status: "success",
             messsage: "Anda berhasil login",
             user,
-          })
+          }).code(202)
           : res.response({
             status: "fail",
             messsage: "Kombinasi Username atau Password salah",
-          });
+          }).code(202);
       } catch (error) {
         return res.response({
           status: "error",
