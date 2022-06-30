@@ -1,6 +1,6 @@
-const { User, UserMission, Mission } = require("../models");
+const { User, Mission, Plan } = require("../models");
 const Bcrypt = require("bcrypt");
-const handleImageUpload = require("../utils/upload");
+
 
 module.exports = [
   {
@@ -32,22 +32,14 @@ module.exports = [
     handler: async (req, res) => {
       const { username, password } = req.payload;
       try {
-        const user = await User.findOne({
-          attributes: [
-            "id",
-            "fullname",
-            "username",
-            "password",
-            "points",
-          ]
-        }, { where: { username: username } });
+        const user = await User.findOne({ where: { username: username } });
         const isValid = await Bcrypt.compare(password, user.password);
         return isValid
           ? res.response({
             status: "success",
             messsage: "Anda berhasil login",
             user,
-          }).code(202)
+          }).code(200)
           : res.response({
             status: "fail",
             messsage: "Kombinasi Username atau Password salah",
@@ -65,15 +57,7 @@ module.exports = [
     path: "/users",
     handler: async (req, res) => {
       try {
-        return await User.findAll({
-          attributes: [
-            "id",
-            "fullname",
-            "username",
-            "password",
-            "points"
-          ]
-        })
+        return await User.findAll()
       } catch (error) {
         return res.response({
           status: "error",
@@ -88,16 +72,7 @@ module.exports = [
     handler: async (req, res) => {
       const { id } = req.params;
       try {
-        return await User.findByPk(
-          id, {
-          attributes: [
-            "id",
-            "fullname",
-            "username",
-            "password",
-            "points",
-          ],
-        }).code(202);
+        return await User.findByPk(id, { include: Plan });
       } catch (error) {
         return res.response({
           status: "error",
@@ -108,11 +83,11 @@ module.exports = [
   },
   {
     method: "GET",
-    path: "/users/{id}/missions",
+    path: "/users/{id}/plans",
     handler: async (req, res) => {
       const { id } = req.params;
       try {
-        return await UserMission.findAll({
+        return await Plan.findAll({
           where: { userId: id },
           include: [User, Mission],
         });
@@ -125,20 +100,16 @@ module.exports = [
     },
   },
   {
-    method: "POST",
-    path: "/users/{user_id}/missions/{mission_id}",
+    method: "GET",
+    path: "/users/{userId}/plans/{planId}",
     handler: async (req, res) => {
-      const { user_id, mission_id } = req.params;
-      const { long, lat } = req.payload;
-
+      const { userId, planId } = req.params;
       try {
-        return await UserMission.create({
-          userId: user_id,
-          missionId: mission_id,
-          long: long,
-          lat: lat,
-          include: [User, Mission],
-        });
+        return await Plan.findByPk(planId,
+          {
+            where: { userId: userId },
+            include: [User, Mission],
+          });
       } catch (error) {
         return res.response({
           status: "error",
@@ -149,7 +120,51 @@ module.exports = [
   },
   {
     method: "POST",
-    path: "/users/{user_id}/missions/{mission_id}/image",
+    path: "/users/{userId}/plans",
+    handler: async (req, res) => {
+      const { userId, planId } = req.params;
+      const { id, name, description } = req.payload;
+      try {
+        return await Plan.create({
+          id: id,
+          name: name,
+          description: description,
+          userId: userId,
+        }, { include: User })
+      } catch (error) {
+        return res.response({
+          status: "error",
+          messsage: error,
+        }).code(202);
+      }
+    },
+  },
+  {
+    method: "POST",
+    path: "/users/{userId}/missions",
+    handler: async (req, res) => {
+      const { userId } = req.params;
+      const { id, planId, name, long, lat } = req.payload;
+      try {
+        return await Mission.create({
+          id: id,
+          name: name,
+          long: long,
+          lat: lat,
+          planId: planId,
+          userId: userId,
+        }, { include: [Plan, User] })
+      } catch (error) {
+        return res.response({
+          status: "error",
+          messsage: error,
+        }).code(202);
+      }
+    },
+  },
+  {
+    method: "POST",
+    path: "/users/{userId}/missions/{missionId}/image",
     options: {
       payload: {
         multipart: true,
@@ -158,11 +173,12 @@ module.exports = [
     handler: async (req, res) => {
       try {
         const { image } = req.payload
-        const { id } = req.params;
+        const { missionId } = req.params;
         const response = await handleImageUpload(image, "cities_" + id)
-        await UserMission.update({ imageUrl: response }, {
+        await Mission.update({ imageUrl: response }, {
           where: {
-            id: id
+            id: missionId,
+            userId: userId
           }
         })
         return {
@@ -178,4 +194,5 @@ module.exports = [
       }
     },
   },
+
 ];

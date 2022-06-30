@@ -1,19 +1,19 @@
 ###
 # User Register
 
-POST http://localhost:5000/register
+POST http://0.0.0.0:3000/register
 Content-Type: application/json
 Accept: application/json
 
 {
-  "name": "nama lengkap",
+  "fullname": "nama lengkap",
   "username": "username2",
   "password": "password123"
 }
 ###
 # User Login
 
-POST http://localhost:5000/login
+POST http://0.0.0.0:3000/login
 Content-Type: application/json
 Accept: application/json
 
@@ -24,13 +24,13 @@ Accept: application/json
 
 ###
 # Get All User
-GET http://localhost:5000/users
+GET http://0.0.0.0:3000/users
 Content-Type: application/json
 Accept: application/json
 
 ###
 # Find User by Id
 
-GET http://localhost:5000/users/1
+GET http://0.0.0.0:3000/users/1
 Content-Type: application/json
 Accept: application/json

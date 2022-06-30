@@ -1,6 +1,5 @@
 const Hapi = require('@hapi/hapi');
 const cityController = require('./controller/city.controller');
-const missionController = require('./controller/mission.controller');
 const placeController = require('./controller/place.controller');
 const planController = require('./controller/plan.controller');
 const userController = require('./controller/user.controller');
@@ -13,7 +12,7 @@ const { database } = require('./models');
   });
 
   try {
-    await database.sync({force: true});
+    await database.sync();
     console.log('Database Initialized');
   } catch (error) {
     console.log(error);
@@ -43,7 +42,6 @@ const { database } = require('./models');
       cityController,
       placeController,
       planController,
-      missionController
     )
   );
 

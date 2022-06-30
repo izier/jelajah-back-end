@@ -1,34 +1,12 @@
-const { Place, Plan, Mission } = require("../models");
+const { Plans } = require("../dummy");
 
 module.exports = [
-  {
-    method: "POST",
-    path: "/plans",
-    handler: async (req, res) => {
-      const { name, description, placeId } = req.payload;
-      try {
-        return await Plan.create(
-          {
-            name: name,
-            description: description,
-            placeId: placeId,
-          },
-          { include: Place }
-        );
-      } catch (error) {
-        return res.response({
-          status: "error",
-          messsage: error,
-        }).code(202);
-      }
-    },
-  },
   {
     method: "GET",
     path: "/plans",
     handler: async (req, res) => {
       try {
-        return await Plan.findAll({ include: [Mission] });
+        return Plans;
       } catch (error) {
         return res.response({
           status: "error",
@@ -43,7 +21,7 @@ module.exports = [
     handler: async (req, res) => {
       try {
         const { id } = req.params;
-        return await Plan.findByPk(id, { include: Mission });
+        return found = Plans.find(element => element.id == id);
       } catch (error) {
         return res.response({
           status: "error",
