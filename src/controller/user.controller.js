@@ -1,6 +1,7 @@
+const { Op } = require("sequelize");
 const { User, Mission, Plan } = require("../models");
 const Bcrypt = require("bcrypt");
-
+const handleImageUpload = require("../utils/upload");
 
 module.exports = [
   {
@@ -19,10 +20,12 @@ module.exports = [
           messsage: "Berhasil mendaftarkan user",
         });
       } catch (error) {
-        return res.response({
-          status: "error",
-          messsage: "username telah digunakan",
-        }).code(202);
+        return res
+          .response({
+            status: "error",
+            messsage: "username telah digunakan",
+          })
+          .code(202);
       }
     },
   },
@@ -32,23 +35,32 @@ module.exports = [
     handler: async (req, res) => {
       const { username, password } = req.payload;
       try {
-        const user = await User.findOne({ where: { username: username } });
+        const user = await User.findOne({
+          where: { username: username },
+          include: { all: true, nested: true },
+        });
         const isValid = await Bcrypt.compare(password, user.password);
         return isValid
-          ? res.response({
-            status: "success",
-            messsage: "Anda berhasil login",
-            user,
-          }).code(200)
-          : res.response({
-            status: "fail",
-            messsage: "Kombinasi Username atau Password salah",
-          }).code(202);
+          ? res
+              .response({
+                status: "success",
+                messsage: "Anda berhasil login",
+                user,
+              })
+              .code(200)
+          : res
+              .response({
+                status: "fail",
+                messsage: "Kombinasi Username atau Password salah",
+              })
+              .code(202);
       } catch (error) {
-        return res.response({
-          status: "error",
-          messsage: error,
-        }).code(202);
+        return res
+          .response({
+            status: "error",
+            messsage: "Data user tidak ditemukan",
+          })
+          .code(202);
       }
     },
   },
@@ -57,12 +69,14 @@ module.exports = [
     path: "/users",
     handler: async (req, res) => {
       try {
-        return await User.findAll()
+        return await User.findAll();
       } catch (error) {
-        return res.response({
-          status: "error",
-          messsage: error,
-        }).code(202);
+        return res
+          .response({
+            status: "error",
+            messsage: error,
+          })
+          .code(202);
       }
     },
   },
@@ -72,12 +86,16 @@ module.exports = [
     handler: async (req, res) => {
       const { id } = req.params;
       try {
-        return await User.findByPk(id, { include: Plan });
+        return await User.findByPk(id, {
+          include: { all: true, nested: true },
+        });
       } catch (error) {
-        return res.response({
-          status: "error",
-          messsage: error,
-        }).code(202);
+        return res
+          .response({
+            status: "error",
+            messsage: error,
+          })
+          .code(202);
       }
     },
   },
@@ -92,10 +110,12 @@ module.exports = [
           include: [User, Mission],
         });
       } catch (error) {
-        return res.response({
-          status: "error",
-          messsage: error,
-        }).code(202);
+        return res
+          .response({
+            status: "error",
+            messsage: error,
+          })
+          .code(202);
       }
     },
   },
@@ -105,16 +125,17 @@ module.exports = [
     handler: async (req, res) => {
       const { userId, planId } = req.params;
       try {
-        return await Plan.findByPk(planId,
-          {
-            where: { userId: userId },
-            include: [User, Mission],
-          });
+        return await Plan.findByPk(planId, {
+          where: { userId: userId },
+          include: [User, Mission],
+        });
       } catch (error) {
-        return res.response({
-          status: "error",
-          messsage: error,
-        }).code(202);
+        return res
+          .response({
+            status: "error",
+            messsage: error,
+          })
+          .code(202);
       }
     },
   },
@@ -122,43 +143,78 @@ module.exports = [
     method: "POST",
     path: "/users/{userId}/plans",
     handler: async (req, res) => {
-      const { userId, planId } = req.params;
-      const { id, name, description } = req.payload;
+      const { userId } = req.params;
+      const { id, name, category, description, missions, status } = req.payload;
       try {
-        return await Plan.create({
-          id: id,
-          name: name,
-          description: description,
-          userId: userId,
-        }, { include: User })
+        result = await Plan.create(
+          {
+            name: name,
+            description: description,
+            category: category,
+            userId: userId,
+            status: false,
+          },
+          {
+            include: User,
+          }
+        );
+        for await (const item of missions) {
+          await Mission.create(
+            {
+              name: item.name,
+              long: item.long,
+              lat: item.lat,
+              status: item.status,
+              planId: result.id,
+              userId: userId,
+            },
+            { include: [Plan, User] }
+          );
+        }
+        return res
+          .response({
+            status: "success",
+            messsage: "berhasil menambahkan plan",
+          })
+          .code(200);
       } catch (error) {
-        return res.response({
-          status: "error",
-          messsage: error,
-        }).code(202);
+        return res
+          .response({
+            status: "error",
+            messsage: error,
+          })
+          .code(202);
       }
     },
   },
+    // https://jelajah-back-end.izier.repl.co/users/3/missions
+    // {"id": 2}
   {
     method: "POST",
     path: "/users/{userId}/missions",
     handler: async (req, res) => {
       const { userId } = req.params;
-      const { id, planId, name, long, lat } = req.payload;
+      const { id, planId, name, long, lat, status } = req.payload;
       try {
-        return await Mission.create({
-          id: id,
-          name: name,
-          long: long,
-          lat: lat,
-          planId: planId,
-          userId: userId,
-        }, { include: [Plan, User] })
+        const result = await Mission.update(
+          { status: true },
+          { where: { id: id } }
+        );
+        mission = await Mission.findByPk(id)
+        plans = await Plan.findByPk(mission.planId, {include: Mission})
+        if (plans.missions.map((e)=> e.status == true).length === plans.missions.length) {
+          plans.status = true
+          plans.save()
+        }
+        await User.increment({ points: 250 }, { where: { id: userId } });
+        return result;
       } catch (error) {
-        return res.response({
-          status: "error",
-          messsage: error,
-        }).code(202);
+        return res
+          .response({
+            status: "error",
+            messsage: error,
+          })
+          .code(202);
       }
     },
   },
@@ -168,31 +224,31 @@ module.exports = [
     options: {
       payload: {
         multipart: true,
-      }
+      },
     },
     handler: async (req, res) => {
       try {
-        const { image } = req.payload
-        const { missionId } = req.params;
-        const response = await handleImageUpload(image, "cities_" + id)
-        await Mission.update({ imageUrl: response }, {
-          where: {
-            id: missionId,
-            userId: userId
-          }
-        })
-        return {
-          status: "success",
-          messsage: "upload image berhasil",
-        }
+        const { image } = req.payload;
+        const { missionId, userId } = req.params;
+        await handleImageUpload(
+          image,
+          "user_" + userId + "missions_" + missionId
+        );
+        return res
+          .response({
+            status: "success",
+            messsage: "berhasil menambahkan foto",
+          })
+          .code(200);
       } catch (error) {
-        console.log(error)
-        return res.response({
-          status: "error",
-          messsage: error,
-        }).code(202);
+        console.log(error);
+        return res
+          .response({
+            status: "error",
+            messsage: error,
+          })
+          .code(202);
       }
     },
   },
-
 ];

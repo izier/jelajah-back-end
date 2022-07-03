@@ -6,23 +6,33 @@ const database = new Sequelize({
 });
 
 const Plan = database.define("plan", {
-  id: {
-    type: Sequelize.INTEGER,
-    primaryKey: true,
+    id: {
+        type: Sequelize.INTEGER,
+        autoIncrement: true,
+        primaryKey: true,
+    },
+    name: {
+        type: Sequelize.STRING,
+        allowNull: false,
+    },
+    category: {
+        type: Sequelize.STRING,
+        allowNull: false,
+    },
+    description: {
+        type: Sequelize.STRING,
+        allowNull: false,
+    },
+    status: {
+        type: Sequelize.BOOLEAN,
+        defaultValue: false,
   },
-  name: {
-    type: Sequelize.STRING,
-    allowNull: false,
-  },
-  description: {
-    type: Sequelize.STRING,
-    allowNull: false,
-  }
 });
 
 const Mission = database.define("mission", {
   id: {
     type: Sequelize.INTEGER,
+    autoIncrement: true,
     primaryKey: true,
   },
   name: {
@@ -37,7 +47,7 @@ const Mission = database.define("mission", {
     type: Sequelize.FLOAT,
     allowNull: false,
   },
-  isDone: {
+  status: {
     type: Sequelize.BOOLEAN,
     defaultValue: false,
   },
